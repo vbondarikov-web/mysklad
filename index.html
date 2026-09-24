@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мой Склад</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<div id="auth" class="max-w-md mx-auto mt-20 bg-white p-6 rounded shadow">
+  <h1 class="text-2xl font-bold mb-4 text-center">Мой Склад - Вход</h1>
+  <input id="email" type="email" placeholder="Email" class="w-full border p-2 mb-2 rounded">
+  <input id="password" type="password" placeholder="Пароль" class="w-full border p-2 mb-2 rounded">
+  <input id="fullname" type="text" placeholder="Имя (при регистрации)" class="w-full border p-2 mb-4 rounded">
+  <div class="flex gap-2">
+    <button onclick="login()" class="flex-1 bg-blue-600 text-white p-2 rounded">Войти</button>
+    <button onclick="register()" class="flex-1 bg-gray-600 text-white p-2 rounded">Регистрация</button>
+  </div>
+  <p id="authMsg" class="text-sm text-red-600 mt-2"></p>
+</div>
+
+<div id="app" class="hidden max-w-5xl mx-auto p-4">
+  <div class="flex justify-between items-center bg-white p-4 rounded shadow mb-4">
+    <div><b id="userEmail"></b> <span id="userRole" class="ml-2 px-2 py-1 bg-blue-100 rounded text-sm"></span></div>
+    <button onclick="logout()" class="bg-red-500 text-white px-4 py-1 rounded">Выйти</button>
+  </div>
+  <div id="adminPanel" class="hidden bg-yellow-50 p-4 rounded mb-4 border">
+    <h3 class="font-bold mb-2">Управление пользователями (только для admin)</h3>
+    <div id="usersList" class="text-sm"></div>
+  </div>
+  <div class="bg-white p-4 rounded shadow mb-4">
+    <h2 class="font-bold mb-2">Добавить товар</h2>
+    <div class="grid grid-cols-5 gap-2">
+      <input id="p_name" placeholder="Название" class="border p-2 rounded">
+      <input id="p_article" placeholder="Артикул" class="border p-2 rounded">
+      <input id="p_qty" type="number" placeholder="Кол-во" class="border p-2 rounded">
+      <input id="p_price" type="number" placeholder="Цена" class="border p-2 rounded">
+      <input id="p_cat" placeholder="Категория" class="border p-2 rounded">
+    </div>
+    <button onclick="addProduct()" id="btnAdd" class="mt-3 bg-green-600 text-white px-6 py-2 rounded">Добавить</button>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <div class="flex justify-between mb-3">
+      <h2 class="font-bold">Товары на складе</h2>
+      <input id="search" oninput="loadProducts()" placeholder="Поиск..." class="border p-1 rounded">
+    </div>
+    <table class="w-full text-sm">
+      <thead><tr class="bg-gray-100"><th class="p-2 text-left">Название</th><th>Артикул</th><th>Кол-во</th><th>Цена</th><th>Категория</th><th>Действия</th></tr></thead>
+      <tbody id="products"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://qytvxettegrzyyhfzvrz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_SzrxETdLRvuSJ36Ohe-xmA_uyRiqqcD';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentProfile = null;
+
+async function register() {
+  const { error } = await supabase.auth.signUp({
+    email: email.value, password: password.value,
+    options: { data: { full_name: fullname.value } }
+  });
+  authMsg.textContent = error ? error.message : 'Регистрация успешна. Теперь войдите.';
+}
+async function login() {
+  const { error } = await supabase.auth.signInWithPassword({ email: email.value, password: password.value });
+  if(error) authMsg.textContent = error.message; else checkUser();
+}
+async function logout(){ await supabase.auth.signOut(); location.reload(); }
+
+async function checkUser(){
+  const { data: { user } } = await supabase.auth.getUser();
+  if(!user) return;
+  const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+  if(!data) return;
+  currentProfile = data;
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  userEmail.textContent = user.email;
+  userRole.textContent = data.role;
+  if(data.role === 'admin') { adminPanel.classList.remove('hidden'); loadUsers(); }
+  if(data.role === 'observer') { btnAdd.disabled = true; btnAdd.classList.add('opacity-50'); }
+  loadProducts();
+}
+async function loadUsers(){
+  const { data } = await supabase.from('profiles').select('*');
+  usersList.innerHTML = data.map(u => `${u.email} - ${u.role} <button onclick="setRole('${u.id}','admin')" class="text-blue-600">[admin]</button> <button onclick="setRole('${u.id}','manager')" class="text-blue-600">[manager]</button> <button onclick="setRole('${u.id}','storekeeper')" class="text-blue-600">[storekeeper]</button> <button onclick="setRole('${u.id}','observer')" class="text-blue-600">[observer]</button>`).join('<br>');
+}
+async function setRole(id, role){ await supabase.from('profiles').update({role}).eq('id', id); loadUsers(); }
+async function addProduct(){
+  if(currentProfile.role === 'observer') return alert('Нет прав');
+  const { error } = await supabase.from('products').insert([{
+    name: p_name.value, article: p_article.value,
+    quantity: parseInt(p_qty.value)||0, price: parseFloat(p_price.value)||0, category: p_cat.value
+  }]);
+  if(error) alert(error.message); else loadProducts();
+}
+async function loadProducts(){
+  const { data } = await supabase.from('products').select('*').order('created_at', {ascending: false});
+  let filtered = data || [];
+  if(search.value) filtered = filtered.filter(p => p.name.toLowerCase().includes(search.value.toLowerCase()));
+  products.innerHTML = filtered.map(p => `<tr class="border-t">
+    <td class="p-2">${p.name}</td><td>${p.article||''}</td><td>${p.quantity}</td><td>${p.price}</td><td>${p.category||''}</td>
+    <td>
+      <button onclick="move('${p.id}',${p.quantity},'приход')" class="bg-green-100 px-2 py-1 rounded mr-1">+ Приход</button>
+      <button onclick="move('${p.id}',${p.quantity},'расход')" class="bg-red-100 px-2 py-1 rounded">- Расход</button>
+      ${currentProfile.role==='admin' ? `<button onclick="delProduct('${p.id}')" class="ml-1 text-red-600">Удалить</button>` : ''}
+    </td></tr>`).join('');
+}
+async function move(id, qty, type){
+  let n = parseInt(prompt(`Сколько единиц ${type}?`));
+  if(!n) return;
+  let newQty = type==='приход' ? qty+n : qty-n;
+  if(newQty<0) return alert('Недостаточно на складе');
+  await supabase.from('products').update({quantity: newQty}).eq('id', id);
+  await supabase.from('movements').insert([{product_id: id, type, quantity: n, user_id: currentProfile.id}]);
+  loadProducts();
+}
+async function delProduct(id){
+  if(!confirm('Удалить?')) return;
+  await supabase.from('products').delete().eq('id', id);
+  loadProducts();
+}
+checkUser();
+</script>
+</body>
+</html>
