@@ -11,7 +11,6 @@
 </head>
 <body class="bg-[#f4f5f7] min-h-screen">
 
-<!-- LOGIN -->
 <div id="auth" class="min-h-screen flex items-center justify-center p-4">
   <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
     <div class="text-center mb-8">
@@ -19,7 +18,7 @@
       <h1 class="text-2xl font-bold text-slate-900">Склады М-Пласт</h1>
       <p class="text-slate-500 text-sm mt-1">Вход для сотрудников</p>
     </div>
-    <input id="email" placeholder="Логин" class="w-full border border-slate-200 p-3 rounded-xl mb-3 outline-none focus:border-slate-900">
+    <input id="email" placeholder="Логин или Email" class="w-full border border-slate-200 p-3 rounded-xl mb-3 outline-none focus:border-slate-900">
     <input id="password" type="password" placeholder="Пароль" class="w-full border border-slate-200 p-3 rounded-xl mb-4 outline-none focus:border-slate-900">
     <button onclick="login()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-medium hover:bg-black transition">Войти</button>
     <p id="authMsg" class="text-sm text-red-600 mt-3 text-center"></p>
@@ -27,7 +26,6 @@
   </div>
 </div>
 
-<!-- APP -->
 <div id="app" class="hidden">
   <header class="bg-white border-b sticky top-0 z-10">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -44,11 +42,10 @@
   </header>
 
   <main class="max-w-7xl mx-auto px-6 py-6">
-    <!-- Админ панель -->
     <div id="adminPanel" class="hidden bg-white rounded-2xl p-6 shadow-sm border mb-6">
       <h3 class="font-semibold mb-4">Управление сотрудниками</h3>
       <div class="grid grid-cols-5 gap-3 mb-4">
-        <input id="u_email" placeholder="Логин (ivanov)" class="border border-slate-200 p-2.5 rounded-xl text-sm">
+        <input id="u_email" placeholder="Логин или Email" class="border border-slate-200 p-2.5 rounded-xl text-sm">
         <input id="u_pass" placeholder="Пароль" class="border border-slate-200 p-2.5 rounded-xl text-sm">
         <input id="u_name" placeholder="ФИО" class="border border-slate-200 p-2.5 rounded-xl text-sm">
         <select id="u_role" class="border border-slate-200 p-2.5 rounded-xl text-sm">
@@ -63,38 +60,35 @@
       <p id="userMsg" class="text-sm mt-2"></p>
     </div>
 
-    <!-- ЭКРАН СКЛАДОВ -->
     <div id="warehousesView">
       <h2 class="text-xl font-bold text-slate-900 mb-6">Выберите склад</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <button onclick="openWarehouse('Механики')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition text-left group">
-          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 text-xl">M</div>
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 font-bold text-blue-700">М</div>
           <div class="font-semibold text-slate-900 group-hover:text-blue-600">Механики</div>
           <div id="count-Механики" class="text-sm text-slate-500 mt-1">0 товаров</div>
         </button>
         <button onclick="openWarehouse('Причалы')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition text-left group">
-          <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 text-xl">П</div>
+          <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 font-bold text-emerald-700">П</div>
           <div class="font-semibold text-slate-900 group-hover:text-emerald-600">Причалы</div>
           <div id="count-Причалы" class="text-sm text-slate-500 mt-1">0 товаров</div>
         </button>
         <button onclick="openWarehouse('ЮГ')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition text-left group">
-          <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-4 text-xl">Ю</div>
+          <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-4 font-bold text-orange-700">Ю</div>
           <div class="font-semibold text-slate-900 group-hover:text-orange-600">ЮГ</div>
           <div id="count-ЮГ" class="text-sm text-slate-500 mt-1">0 товаров</div>
         </button>
         <button onclick="openWarehouse('Дмитров')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition text-left group">
-          <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 text-xl">Д</div>
+          <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 font-bold text-purple-700">Д</div>
           <div class="font-semibold text-slate-900 group-hover:text-purple-600">Дмитров</div>
           <div id="count-Дмитров" class="text-sm text-slate-500 mt-1">0 товаров</div>
         </button>
       </div>
     </div>
 
-    <!-- ЭКРАН ТОВАРОВ ВНУТРИ СКЛАДА -->
     <div id="warehouseDetail" class="hidden">
       <button onclick="backToWarehouses()" class="mb-4 text-sm bg-white border px-4 py-2 rounded-xl hover:bg-slate-50">Назад к складам</button>
       <h2 id="warehouseTitle" class="text-xl font-bold mb-6"></h2>
-      
       <div class="grid grid-cols-3 gap-6">
         <div class="col-span-2">
           <div id="addBlock" class="bg-white rounded-2xl p-6 shadow-sm border mb-6">
@@ -108,7 +102,6 @@
             </div>
             <button onclick="addProduct()" id="btnAdd" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition">Добавить</button>
           </div>
-
           <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
             <div class="p-6 flex justify-between items-center">
               <h3 class="font-semibold">Товары</h3>
@@ -126,7 +119,6 @@
         </div>
       </div>
     </div>
-
   </main>
 </div>
 
@@ -138,40 +130,64 @@ let currentProfile = null;
 let currentWarehouse = null;
 const WAREHOUSES = ['Механики','Причалы','ЮГ','Дмитров'];
 
-function normalizeLogin(v){ v=v.trim().toLowerCase(); if(!v.includes('@')) v=v+'@m-plast.local'; return v; }
+function normalizeLogin(v){
+  v = v.trim().toLowerCase();
+  if(v && !v.includes('@')) v = v + '@m-plast.local';
+  return v;
+}
+
 async function login(){
-  let e = normalizeLogin(email.value);
-  const { error } = await supabase.auth.signInWithPassword({ email: e, password: password.value });
-  if(error) authMsg.textContent = 'Неверный логин или пароль'; else checkUser();
+  let e = normalizeLogin(document.getElementById('email').value);
+  let p = document.getElementById('password').value;
+  if(!e || !p){ authMsg.textContent='Введите логин и пароль'; return; }
+  authMsg.textContent='Вход...';
+  const { error } = await supabase.auth.signInWithPassword({ email: e, password: p });
+  if(error){
+    // пробуем как есть без нормализации для mpt.spb.ru
+    let raw = document.getElementById('email').value.trim().toLowerCase();
+    if(raw !== e){
+      const { error: err2 } = await supabase.auth.signInWithPassword({ email: raw, password: p });
+      if(!err2) { checkUser(); return; }
+      authMsg.textContent = err2.message;
+    } else {
+      authMsg.textContent = error.message;
+    }
+  } else {
+    checkUser();
+  }
 }
 async function logout(){ await supabase.auth.signOut(); location.reload(); }
 
 async function checkUser(){
   const { data: { user } } = await supabase.auth.getUser();
-  if(!user) return;
-  const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-  if(!data) return;
+  if(!user){ authMsg.textContent='Пользователь не найден. Проверь что создал его в Supabase > Authentication > Users'; return; }
+  const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+  if(error || !data){
+    authMsg.textContent='Профиль не найден: ' + (error?error.message:'');
+    console.log(error);
+    return;
+  }
   currentProfile = data;
-  auth.classList.add('hidden');
-  app.classList.remove('hidden');
-  userEmail.textContent = user.email.replace('@m-plast.local','');
-  userRole.textContent = data.role;
-  if(data.role === 'admin') { adminPanel.classList.remove('hidden'); loadUsers(); }
-  if(data.role === 'observer') { btnAdd.disabled=true; btnAdd.classList.add('opacity-40'); addBlock.classList.add('opacity-40','pointer-events-none'); }
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('userEmail').textContent = user.email;
+  document.getElementById('userRole').textContent = data.role;
+  if(data.role === 'admin'){ document.getElementById('adminPanel').classList.remove('hidden'); loadUsers(); }
+  if(data.role === 'observer'){ document.getElementById('btnAdd').disabled=true; document.getElementById('btnAdd').classList.add('opacity-40'); document.getElementById('addBlock').classList.add('opacity-40','pointer-events-none'); }
   loadCounts();
 }
 
 function openWarehouse(name){
   currentWarehouse = name;
-  warehousesView.classList.add('hidden');
-  warehouseDetail.classList.remove('hidden');
-  warehouseTitle.textContent = 'Склад: ' + name;
+  document.getElementById('warehousesView').classList.add('hidden');
+  document.getElementById('warehouseDetail').classList.remove('hidden');
+  document.getElementById('warehouseTitle').textContent = 'Склад: ' + name;
   document.querySelectorAll('.warehouseName').forEach(el=>el.textContent=name);
   loadProducts(); loadHistory();
 }
 function backToWarehouses(){
-  warehouseDetail.classList.add('hidden');
-  warehousesView.classList.remove('hidden');
+  document.getElementById('warehouseDetail').classList.add('hidden');
+  document.getElementById('warehousesView').classList.remove('hidden');
   currentWarehouse=null; loadCounts();
 }
 
@@ -185,19 +201,24 @@ async function loadCounts(){
 }
 
 async function createUser(){
-  let e = normalizeLogin(u_email.value);
-  userMsg.textContent = 'Создание...';
-  const { data, error } = await supabase.auth.signUp({ email: e, password: u_pass.value, options: { data: { full_name: u_name.value } } });
-  if(error){ userMsg.textContent = error.message; userMsg.className='text-sm mt-2 text-red-600'; return; }
-  if(data.user) await supabase.from('profiles').update({ role: u_role.value, full_name: u_name.value }).eq('id', data.user.id);
-  userMsg.textContent = 'Сотрудник создан: ' + e.replace('@m-plast.local','');
-  userMsg.className='text-sm mt-2 text-emerald-600'; loadUsers();
+  let e = normalizeLogin(document.getElementById('u_email').value);
+  let raw = document.getElementById('u_email').value.trim();
+  if(raw.includes('@')) e = raw.toLowerCase();
+  let pass = document.getElementById('u_pass').value;
+  let name = document.getElementById('u_name').value;
+  let role = document.getElementById('u_role').value;
+  document.getElementById('userMsg').textContent='Создание...';
+  const { data, error } = await supabase.auth.signUp({ email: e, password: pass, options: { data: { full_name: name } } });
+  if(error){ document.getElementById('userMsg').textContent = error.message; document.getElementById('userMsg').className='text-sm mt-2 text-red-600'; return; }
+  if(data.user) await supabase.from('profiles').update({ role: role, full_name: name }).eq('id', data.user.id);
+  document.getElementById('userMsg').textContent='Сотрудник создан: '+e;
+  document.getElementById('userMsg').className='text-sm mt-2 text-emerald-600'; loadUsers();
 }
 async function loadUsers(){
   const { data } = await supabase.from('profiles').select('*').order('created_at');
-  usersList.innerHTML = data.map(u => `
+  document.getElementById('usersList').innerHTML = (data||[]).map(u => `
     <div class="flex justify-between items-center py-3">
-      <div><b>${u.email.replace('@m-plast.local','')}</b> <span class="text-slate-500">${u.full_name||''}</span> - <span class="px-2 py-1 bg-slate-100 rounded-full text-xs">${u.role}</span></div>
+      <div><b>${u.email}</b> <span class="text-slate-500">${u.full_name||''}</span> - <span class="px-2 py-1 bg-slate-100 rounded-full text-xs">${u.role}</span></div>
       <div class="flex gap-1">
         <button onclick="setRole('${u.id}','admin')" class="px-2 py-1 hover:bg-slate-100 rounded">admin</button>
         <button onclick="setRole('${u.id}','manager')" class="px-2 py-1 hover:bg-slate-100 rounded">manager</button>
@@ -212,19 +233,20 @@ async function delUser(id){ if(!confirm('Удалить?'))return; await supabas
 
 async function addProduct(){
   if(currentProfile.role === 'observer') return alert('Нет прав');
-  if(!p_name.value) return alert('Введите название');
+  if(!document.getElementById('p_name').value) return alert('Введите название');
   const { error } = await supabase.from('products').insert([{
-    name: p_name.value, article: p_article.value,
-    quantity: parseInt(p_qty.value)||0, price: parseFloat(p_price.value)||0, category: p_cat.value,
+    name: document.getElementById('p_name').value, article: document.getElementById('p_article').value,
+    quantity: parseInt(document.getElementById('p_qty').value)||0, price: parseFloat(document.getElementById('p_price').value)||0, category: document.getElementById('p_cat').value,
     warehouse: currentWarehouse
   }]);
-  if(error) alert(error.message); else { p_name.value=''; p_article.value=''; p_qty.value=''; p_price.value=''; p_cat.value=''; loadProducts(); loadCounts(); }
+  if(error) alert(error.message); else { document.getElementById('p_name').value=''; document.getElementById('p_article').value=''; document.getElementById('p_qty').value=''; document.getElementById('p_price').value=''; document.getElementById('p_cat').value=''; loadProducts(); loadCounts(); }
 }
 async function loadProducts(){
   const { data } = await supabase.from('products').select('*').eq('warehouse', currentWarehouse).order('created_at',{ascending:false});
   let f = data||[];
-  if(search.value) f=f.filter(p=>p.name.toLowerCase().includes(search.value.toLowerCase()));
-  products.innerHTML = f.length ? f.map(p=>`<tr class="border-t hover:bg-slate-50">
+  let s = document.getElementById('search').value;
+  if(s) f=f.filter(p=>p.name.toLowerCase().includes(s.toLowerCase()));
+  document.getElementById('products').innerHTML = f.length ? f.map(p=>`<tr class="border-t hover:bg-slate-50">
     <td class="p-3 pl-6"><div class="font-medium">${p.name}</div><div class="text-xs text-slate-400">${p.article||''}</div></td>
     <td><span class="${p.quantity<5?'text-red-600 font-bold':''}">${p.quantity}</span></td>
     <td>${p.price} ₽</td><td><span class="px-2 py-1 bg-slate-100 rounded-full text-xs">${p.category||'-'}</span></td>
@@ -246,8 +268,7 @@ async function delProduct(id){ if(!confirm('Удалить товар?'))return;
 async function loadHistory(){
   const { data } = await supabase.from('movements').select('*, products(name, warehouse)').order('created_at',{ascending:false}).limit(30);
   let f = (data||[]).filter(m=>m.products && m.products.warehouse===currentWarehouse);
-  if(!f.length) history.innerHTML='<p class="text-slate-400 text-xs">Пока нет движений на этом складе</p>';
-  else history.innerHTML=f.map(m=>`<div class="flex justify-between border-b pb-2 text-xs"><span class="${m.type==='приход'?'text-emerald-600':'text-red-600'}">${m.type} ${m.quantity}</span> <span>${m.products?.name||''}</span> <span class="text-slate-400">${new Date(m.created_at).toLocaleDateString()}</span></div>`).join('');
+  document.getElementById('history').innerHTML = !f.length ? '<p class="text-slate-400 text-xs">Пока нет движений на этом складе</p>' : f.map(m=>`<div class="flex justify-between border-b pb-2 text-xs"><span class="${m.type==='приход'?'text-emerald-600':'text-red-600'}">${m.type} ${m.quantity}</span> <span>${m.products?.name||''}</span> <span class="text-slate-400">${new Date(m.created_at).toLocaleDateString()}</span></div>`).join('');
 }
 checkUser();
 </script>
