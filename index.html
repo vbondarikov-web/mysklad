@@ -9,44 +9,56 @@
 <style>body{font-family:'Inter',sans-serif} .active{background:#1e3a5f;color:white} .active .badge{background:#3b82f6}</style>
 <script type="importmap">{"imports":{"@supabase/supabase-js":"https://esm.sh/@supabase/supabase-js@2"}}</script>
 </head>
-<body class="bg-[#f4f5f7] min-h-screen">
+<body class="bg-[#e8ecf1] min-h-screen">
 
-<div id="auth" class="min-h-screen flex items-center justify-center p-4">
+<div id="auth" class="min-h-screen flex items-center justify-center p-4 bg-[#e8ecf1]">
   <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
     <div class="text-center mb-8">
-      <div class="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">М</div>
+      <!-- ЛОГОТИП -->
+      <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+        <svg viewBox="0 0 100 115" class="w-16 h-16">
+          <path fill="#0f1e33" d="M50 0 L58 6 L58 109 L50 115 L42 109 L42 6 Z"/>
+          <path fill="#0f1e33" d="M32 12 L40 18 L40 97 L32 103 L24 97 L24 18 Z"/>
+          <path fill="#0f1e33" d="M68 12 L76 18 L76 97 L68 103 L60 97 L60 18 Z"/>
+          <path fill="#0f1e33" d="M14 22 L22 28 L22 87 L14 93 L6 87 L6 28 Z"/>
+          <path fill="#0f1e33" d="M86 22 L94 28 L94 87 L86 93 L78 87 L78 28 Z"/>
+        </svg>
+      </div>
       <h1 class="text-2xl font-bold text-slate-900">Склады М-Пласт</h1>
       <p class="text-slate-500 text-sm mt-1">Вход для сотрудников</p>
     </div>
-    <input id="email" placeholder="Логин или Email" class="w-full border border-slate-200 p-3 rounded-xl mb-3 outline-none focus:border-slate-900">
-    <input id="password" type="password" placeholder="Пароль" class="w-full border border-slate-200 p-3 rounded-xl mb-4 outline-none focus:border-slate-900">
-    <button onclick="window.doLogin()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-medium hover:bg-black transition">Войти</button>
+    <input id="email" placeholder="Логин или Email" class="w-full border border-slate-300 bg-[#f8fafc] p-3 rounded-xl mb-3 outline-none focus:border-slate-900 focus:bg-white">
+    <input id="password" type="password" placeholder="Пароль" class="w-full border border-slate-300 bg-[#f8fafc] p-3 rounded-xl mb-4 outline-none focus:border-slate-900 focus:bg-white">
+    <button onclick="window.doLogin()" class="w-full bg-[#0f1e33] text-white p-3 rounded-xl font-medium hover:bg-black transition">Войти</button>
     <p id="authMsg" class="text-sm text-red-600 mt-3 text-center whitespace-pre-wrap"></p>
   </div>
 </div>
 
-<div id="warehousesView" class="hidden min-h-screen">
-  <header class="bg-white border-b sticky top-0">
+<div id="warehousesView" class="hidden min-h-screen bg-[#e8ecf1]">
+  <header class="bg-white border-b sticky top-0 shadow-sm">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-3"><div class="w-9 h-9 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold">М</div><span class="font-bold">Склады М-Пласт</span><span id="userRole1" class="ml-2 px-3 py-1 bg-slate-100 rounded-full text-xs uppercase"></span></div>
-      <div class="flex items-center gap-4"><span id="userEmail1" class="text-sm text-slate-600"></span><button onclick="window.doLogout()" class="text-sm bg-slate-100 px-4 py-2 rounded-xl">Выйти</button></div>
+      <div class="flex items-center gap-3">
+        <svg viewBox="0 0 100 115" class="w-9 h-9"><path fill="#0f1e33" d="M50 0 L58 6 L58 109 L50 115 L42 109 L42 6 Z"/><path fill="#0f1e33" d="M32 12 L40 18 L40 97 L32 103 L24 97 L24 18 Z"/><path fill="#0f1e33" d="M68 12 L76 18 L76 97 L68 103 L60 97 L60 18 Z"/><path fill="#0f1e33" d="M14 22 L22 28 L22 87 L14 93 L6 87 L6 28 Z"/><path fill="#0f1e33" d="M86 22 L94 28 L94 87 L86 93 L78 87 L78 28 Z"/></svg>
+        <span class="font-bold text-slate-900">Склады М-Пласт</span><span id="userRole1" class="ml-2 px-3 py-1 bg-slate-100 rounded-full text-xs uppercase"></span>
+      </div>
+      <div class="flex items-center gap-4"><span id="userEmail1" class="text-sm text-slate-600"></span><button onclick="window.doLogout()" class="text-sm bg-slate-100 px-4 py-2 rounded-xl hover:bg-slate-200">Выйти</button></div>
     </div>
   </header>
   <div class="max-w-7xl mx-auto px-6 py-8">
     <div id="adminPanel" class="hidden bg-white rounded-2xl p-6 shadow-sm border mb-6">
       <h3 class="font-semibold mb-4">Управление сотрудниками</h3>
       <div class="grid grid-cols-5 gap-3 mb-4">
-        <input id="u_email" placeholder="Логин или Email" class="border border-slate-200 p-2.5 rounded-xl text-sm">
-        <input id="u_pass" placeholder="Пароль" class="border p-2.5 rounded-xl text-sm">
-        <input id="u_name" placeholder="ФИО" class="border p-2.5 rounded-xl text-sm">
-        <select id="u_role" class="border p-2.5 rounded-xl text-sm"><option value="manager">Менеджер</option><option value="storekeeper">Кладовщик</option><option value="observer">Наблюдатель</option><option value="admin">Админ</option></select>
-        <button onclick="window.createUser()" class="bg-slate-900 text-white rounded-xl text-sm">Создать</button>
+        <input id="u_email" placeholder="Логин или Email" class="border border-slate-200 p-2.5 rounded-xl text-sm bg-[#f8fafc]">
+        <input id="u_pass" placeholder="Пароль" class="border p-2.5 rounded-xl text-sm bg-[#f8fafc]">
+        <input id="u_name" placeholder="ФИО" class="border p-2.5 rounded-xl text-sm bg-[#f8fafc]">
+        <select id="u_role" class="border p-2.5 rounded-xl text-sm bg-[#f8fafc]"><option value="manager">Менеджер</option><option value="storekeeper">Кладовщик</option><option value="observer">Наблюдатель</option><option value="admin">Админ</option></select>
+        <button onclick="window.createUser()" class="bg-[#0f1e33] text-white rounded-xl text-sm">Создать</button>
       </div>
       <div id="usersList" class="divide-y text-sm"></div><p id="userMsg" class="text-sm mt-2"></p>
     </div>
-    <h2 class="text-xl font-bold mb-6">Выберите склад</h2>
+    <h2 class="text-xl font-bold mb-6 text-slate-800">Выберите склад</h2>
     <div class="grid grid-cols-4 gap-6">
-      <button onclick="window.openWarehouse('Механики')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md text-left"><div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 font-bold text-blue-700">М</div><div class="font-semibold">Механики</div><div id="count-Механики" class="text-sm text-slate-500">0 товаров</div></button>
+      <button onclick="window.openWarehouse('Механики')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md text-left"><div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 font-bold text-[#0f1e33]">М</div><div class="font-semibold">Механики</div><div id="count-Механики" class="text-sm text-slate-500">0 товаров</div></button>
       <button onclick="window.openWarehouse('Причалы')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md text-left"><div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 font-bold text-emerald-700">П</div><div class="font-semibold">Причалы</div><div id="count-Причалы" class="text-sm text-slate-500">0 товаров</div></button>
       <button onclick="window.openWarehouse('ЮГ')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md text-left"><div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-4 font-bold text-orange-700">Ю</div><div class="font-semibold">ЮГ</div><div id="count-ЮГ" class="text-sm text-slate-500">0 товаров</div></button>
       <button onclick="window.openWarehouse('Дмитров')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md text-left"><div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 font-bold text-purple-700">Д</div><div class="font-semibold">Дмитров</div><div id="count-Дмитров" class="text-sm text-slate-500">0 товаров</div></button>
@@ -57,7 +69,7 @@
 <div id="warehouseLayout" class="hidden min-h-screen flex">
   <aside class="w-[260px] bg-[#0f1e33] text-slate-300 flex flex-col shrink-0">
     <div class="p-5 border-b border-white/10 flex items-center gap-3">
-      <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold">М</div>
+      <svg viewBox="0 0 100 115" class="w-9 h-9 shrink-0"><path fill="white" d="M50 0 L58 6 L58 109 L50 115 L42 109 L42 6 Z"/><path fill="white" d="M32 12 L40 18 L40 97 L32 103 L24 97 L24 18 Z"/><path fill="white" d="M68 12 L76 18 L76 97 L68 103 L60 97 L60 18 Z"/><path fill="white" d="M14 22 L22 28 L22 87 L14 93 L6 87 L6 28 Z"/><path fill="white" d="M86 22 L94 28 L94 87 L86 93 L78 87 L78 28 Z"/></svg>
       <div><div class="text-white font-bold text-sm leading-none">Склады М-Пласт</div><div id="whName" class="text-xs text-slate-400"></div></div>
     </div>
     <div class="flex-1 overflow-auto py-4 px-2">
@@ -65,25 +77,21 @@
       <button onclick="window.switchTab('stock')" data-tab="stock" class="tab-btn active w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between"><span class="flex items-center gap-3"><span class="w-5 text-center">-</span> Склад запчастей</span><span id="badge-stock" class="badge bg-slate-700 text-white text-xs px-2 py-0.5 rounded-full">0</span></button>
       <button onclick="window.switchTab('history')" data-tab="history" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">H</span> История операций</button>
       <button onclick="window.switchTab('orders')" data-tab="orders" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">Z</span> Заявки на закупку</button>
-
       <div class="mechanics-only">
         <div class="text-[11px] tracking-widest text-slate-500 px-3 mt-6 mb-2">АНАЛИТИКА</div>
         <button onclick="window.switchTab('dashboard')" data-tab="dashboard" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">#</span> Дашборд и графики</button>
         <button onclick="window.switchTab('finance')" data-tab="finance" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">$</span> Финансы базы</button>
         <button onclick="window.switchTab('eff')" data-tab="eff" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">%</span> Эффективность сервиса</button>
-
         <div class="text-[11px] tracking-widest text-slate-500 px-3 mt-6 mb-2">ТРАНСПОРТ</div>
         <button onclick="window.switchTab('fleet')" data-tab="fleet" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between"><span class="flex items-center gap-3"><span class="w-5 text-center">A</span> Автопарк</span><span class="badge bg-slate-700 text-xs px-2 rounded-full">2</span></button>
         <button onclick="window.switchTab('drivers')" data-tab="drivers" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">O</span> Водители</button>
         <button onclick="window.switchTab('waybills')" data-tab="waybills" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">P</span> Путевые листы</button>
         <button onclick="window.switchTab('pre')" data-tab="pre" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">></span> Предрейсовый контроль</button>
         <button onclick="window.switchTab('gsm')" data-tab="gsm" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">C</span> Одометр и ГСМ</button>
-
         <div class="text-[11px] tracking-widest text-slate-500 px-3 mt-6 mb-2">ТО И РЕМОНТ</div>
         <button onclick="window.switchTab('to')" data-tab="to" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">/</span> График ТО</button>
         <button onclick="window.switchTab('repair_req')" data-tab="repair_req" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">/</span> Заявки на ремонт</button>
         <button onclick="window.switchTab('repair')" data-tab="repair" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">F</span> Ремонтные листы</button>
-
         <div class="text-[11px] tracking-widest text-slate-500 px-3 mt-6 mb-2">ДОКУМЕНТЫ</div>
         <button onclick="window.switchTab('docs')" data-tab="docs" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">D</span> Контроль документов</button>
         <button onclick="window.switchTab('tires')" data-tab="tires" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">*</span> Шины и АКБ</button>
@@ -94,9 +102,8 @@
       <div class="flex items-center justify-between mt-3 text-xs"><span id="userEmail2" class="text-slate-400"></span><button onclick="window.doLogout()" class="text-slate-300 hover:text-white">Выйти</button></div>
     </div>
   </aside>
-
-  <main class="flex-1 bg-[#f4f5f7] min-h-screen">
-    <div class="bg-white border-b px-8 py-4 flex justify-between items-center">
+  <main class="flex-1 bg-[#e8ecf1] min-h-screen">
+    <div class="bg-white border-b px-8 py-4 flex justify-between items-center shadow-sm">
       <h2 id="contentTitle" class="text-xl font-bold text-slate-900">Склад запчастей</h2>
       <span id="userRole2" class="px-3 py-1 bg-slate-100 rounded-full text-xs uppercase"></span>
     </div>
@@ -105,21 +112,21 @@
         <div class="bg-white rounded-2xl p-6 shadow-sm border mb-6" id="addBlock">
           <h3 class="font-semibold mb-4">Добавить товар</h3>
           <div class="grid grid-cols-5 gap-3">
-            <input id="p_name" placeholder="Название *" class="border p-2.5 rounded-xl text-sm">
-            <input id="p_article" placeholder="Артикул" class="border p-2.5 rounded-xl text-sm">
-            <input id="p_qty" type="number" placeholder="Кол-во" class="border p-2.5 rounded-xl text-sm">
-            <input id="p_price" type="number" placeholder="Цена" class="border p-2.5 rounded-xl text-sm">
-            <input id="p_cat" placeholder="Категория" class="border p-2.5 rounded-xl text-sm">
+            <input id="p_name" placeholder="Название *" class="border p-2.5 rounded-xl text-sm bg-[#f8fafc]">
+            <input id="p_article" placeholder="Артикул" class="border p-2.5 rounded-xl text-sm bg-[#f8fafc]">
+            <input id="p_qty" type="number" placeholder="Кол-во" class="border p-2.5 rounded-xl text-sm bg-[#f8fafc]">
+            <input id="p_price" type="number" placeholder="Цена" class="border p-2.5 rounded-xl text-sm bg-[#f8fafc]">
+            <input id="p_cat" placeholder="Категория" class="border p-2.5 rounded-xl text-sm bg-[#f8fafc]">
           </div>
           <button onclick="window.addProduct()" id="btnAdd" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm">Добавить</button>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
-          <div class="p-6 flex justify-between items-center"><h3 class="font-semibold">Товары на складе</h3><input id="search" oninput="window.loadProducts()" placeholder="Поиск..." class="border p-2 rounded-xl text-sm w-64"></div>
+          <div class="p-6 flex justify-between items-center"><h3 class="font-semibold">Товары на складе</h3><input id="search" oninput="window.loadProducts()" placeholder="Поиск..." class="border p-2 rounded-xl text-sm w-64 bg-[#f8fafc]"></div>
           <table class="w-full text-sm"><thead><tr class="bg-slate-50 text-slate-500 text-xs uppercase"><th class="p-3 text-left pl-6">Товар</th><th>Кол-во</th><th>Цена</th><th>Категория</th><th class="pr-6">Действия</th></tr></thead><tbody id="products"></tbody></table>
         </div>
       </div>
       <div id="tab-history" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold mb-4">История операций</h3><div id="history" class="space-y-2 text-sm"></div></div>
-      <div id="tab-orders" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold mb-2">Заявки на закупку</h3><p class="text-slate-500 text-sm">Заявки на закупку для склада <span class="wh-name"></span></p><button onclick="alert('Скоро: создание заявки')" class="mt-4 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm">Создать заявку</button></div>
+      <div id="tab-orders" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold mb-2">Заявки на закупку</h3><p class="text-slate-500 text-sm">Заявки для склада <span class="wh-name"></span></p><button onclick="alert('Скоро: создание заявки')" class="mt-4 bg-[#0f1e33] text-white px-4 py-2 rounded-xl text-sm">Создать заявку</button></div>
       <div id="tab-dashboard" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Дашборд и графики</h3><p class="text-slate-500 text-sm mt-2">Аналитика по складу <span class="wh-name"></span></p></div>
       <div id="tab-finance" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Финансы базы</h3><p class="text-slate-500 text-sm">Финансы по складу <span class="wh-name"></span></p></div>
       <div id="tab-eff" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Эффективность сервиса</h3><p class="text-slate-500 text-sm">KPI сервиса</p></div>
@@ -142,7 +149,6 @@ import { createClient } from '@supabase/supabase-js'
 const supabase = createClient('https://qytvxettegrzyyhfzvrz.supabase.co','sb_publishable_SzrxETdLRvuSJ36Ohe-xmA_uyRiqqcD');
 let currentProfile=null, currentWarehouse=null;
 const WAREHOUSES=['Механики','Причалы','ЮГ','Дмитров'];
-
 window.doLogin = async () => {
   let raw=document.getElementById('email').value.trim();
   let e=raw.toLowerCase(); if(e && !e.includes('@')) e=e+'@m-plast.local';
@@ -196,14 +202,8 @@ window.switchTab=(id)=>{
 }
 async function loadCounts(){
   const {data}=await supabase.from('products').select('warehouse');
-  WAREHOUSES.forEach(w=>{
-    const c=(data||[]).filter(p=>p.warehouse===w).length;
-    const el=document.getElementById('count-'+w); if(el) el.textContent=c+' товаров';
-  });
-  if(currentWarehouse){
-    const c=(data||[]).filter(p=>p.warehouse===currentWarehouse).length;
-    document.getElementById('badge-stock').textContent=c;
-  }
+  WAREHOUSES.forEach(w=>{ const c=(data||[]).filter(p=>p.warehouse===w).length; const el=document.getElementById('count-'+w); if(el) el.textContent=c+' товаров'; });
+  if(currentWarehouse){ const c=(data||[]).filter(p=>p.warehouse===currentWarehouse).length; document.getElementById('badge-stock').textContent=c; }
 }
 window.createUser=async()=>{
   let raw=document.getElementById('u_email').value.trim().toLowerCase();
