@@ -6,13 +6,12 @@
 <title>Склады М-Пласт</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>body{font-family:'Inter',sans-serif}</style>
-<script type="importmap">
-{"imports":{"@supabase/supabase-js":"https://esm.sh/@supabase/supabase-js@2"}}
-</script>
+<style>body{font-family:'Inter',sans-serif} .active{background:#1e3a5f;color:white} .active .badge{background:#3b82f6}</style>
+<script type="importmap">{"imports":{"@supabase/supabase-js":"https://esm.sh/@supabase/supabase-js@2"}}</script>
 </head>
 <body class="bg-[#f4f5f7] min-h-screen">
 
+<!-- LOGIN -->
 <div id="auth" class="min-h-screen flex items-center justify-center p-4">
   <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
     <div class="text-center mb-8">
@@ -24,71 +23,121 @@
     <input id="password" type="password" placeholder="Пароль" class="w-full border border-slate-200 p-3 rounded-xl mb-4 outline-none focus:border-slate-900">
     <button onclick="window.doLogin()" class="w-full bg-slate-900 text-white p-3 rounded-xl font-medium hover:bg-black transition">Войти</button>
     <p id="authMsg" class="text-sm text-red-600 mt-3 text-center whitespace-pre-wrap"></p>
-    <p id="debug" class="text-xs text-slate-400 text-center mt-2"></p>
   </div>
 </div>
 
-<div id="app" class="hidden">
-  <header class="bg-white border-b sticky top-0 z-10">
+<!-- ВЫБОР СКЛАДА -->
+<div id="warehousesView" class="hidden min-h-screen">
+  <header class="bg-white border-b sticky top-0">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold">М</div>
-        <span class="font-bold text-slate-900">Склады М-Пласт</span>
-        <span id="userRole" class="ml-2 px-3 py-1 bg-slate-100 rounded-full text-xs font-medium uppercase"></span>
-      </div>
-      <div class="flex items-center gap-4">
-        <span id="userEmail" class="text-sm text-slate-600"></span>
-        <button onclick="window.doLogout()" class="text-sm bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl transition">Выйти</button>
-      </div>
+      <div class="flex items-center gap-3"><div class="w-9 h-9 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold">М</div><span class="font-bold">Склады М-Пласт</span><span id="userRole1" class="ml-2 px-3 py-1 bg-slate-100 rounded-full text-xs uppercase"></span></div>
+      <div class="flex items-center gap-4"><span id="userEmail1" class="text-sm text-slate-600"></span><button onclick="window.doLogout()" class="text-sm bg-slate-100 px-4 py-2 rounded-xl">Выйти</button></div>
     </div>
   </header>
-  <main class="max-w-7xl mx-auto px-6 py-6">
+  <div class="max-w-7xl mx-auto px-6 py-8">
     <div id="adminPanel" class="hidden bg-white rounded-2xl p-6 shadow-sm border mb-6">
       <h3 class="font-semibold mb-4">Управление сотрудниками</h3>
       <div class="grid grid-cols-5 gap-3 mb-4">
         <input id="u_email" placeholder="Логин или Email" class="border border-slate-200 p-2.5 rounded-xl text-sm">
-        <input id="u_pass" placeholder="Пароль" class="border border-slate-200 p-2.5 rounded-xl text-sm">
-        <input id="u_name" placeholder="ФИО" class="border border-slate-200 p-2.5 rounded-xl text-sm">
-        <select id="u_role" class="border border-slate-200 p-2.5 rounded-xl text-sm">
-          <option value="manager">Менеджер</option><option value="storekeeper">Кладовщик</option><option value="observer">Наблюдатель</option><option value="admin">Админ</option>
-        </select>
-        <button onclick="window.createUser()" class="bg-slate-900 text-white rounded-xl text-sm font-medium">Создать</button>
+        <input id="u_pass" placeholder="Пароль" class="border p-2.5 rounded-xl text-sm">
+        <input id="u_name" placeholder="ФИО" class="border p-2.5 rounded-xl text-sm">
+        <select id="u_role" class="border p-2.5 rounded-xl text-sm"><option value="manager">Менеджер</option><option value="storekeeper">Кладовщик</option><option value="observer">Наблюдатель</option><option value="admin">Админ</option></select>
+        <button onclick="window.createUser()" class="bg-slate-900 text-white rounded-xl text-sm">Создать</button>
       </div>
-      <div id="usersList" class="divide-y text-sm"></div>
-      <p id="userMsg" class="text-sm mt-2"></p>
+      <div id="usersList" class="divide-y text-sm"></div><p id="userMsg" class="text-sm mt-2"></p>
     </div>
-    <div id="warehousesView">
-      <h2 class="text-xl font-bold text-slate-900 mb-6">Выберите склад</h2>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <button onclick="window.openWarehouse('Механики')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition text-left"><div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 font-bold text-blue-700">М</div><div class="font-semibold">Механики</div><div id="count-Механики" class="text-sm text-slate-500 mt-1">0 товаров</div></button>
-        <button onclick="window.openWarehouse('Причалы')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition text-left"><div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 font-bold text-emerald-700">П</div><div class="font-semibold">Причалы</div><div id="count-Причалы" class="text-sm text-slate-500 mt-1">0 товаров</div></button>
-        <button onclick="window.openWarehouse('ЮГ')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition text-left"><div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-4 font-bold text-orange-700">Ю</div><div class="font-semibold">ЮГ</div><div id="count-ЮГ" class="text-sm text-slate-500 mt-1">0 товаров</div></button>
-        <button onclick="window.openWarehouse('Дмитров')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md transition text-left"><div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 font-bold text-purple-700">Д</div><div class="font-semibold">Дмитров</div><div id="count-Дмитров" class="text-sm text-slate-500 mt-1">0 товаров</div></button>
-      </div>
+    <h2 class="text-xl font-bold mb-6">Выберите склад</h2>
+    <div class="grid grid-cols-4 gap-6">
+      <button onclick="window.openWarehouse('Механики')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md text-left"><div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 font-bold text-blue-700">М</div><div class="font-semibold">Механики</div><div id="count-Механики" class="text-sm text-slate-500">0 товаров</div></button>
+      <button onclick="window.openWarehouse('Причалы')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md text-left"><div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4 font-bold text-emerald-700">П</div><div class="font-semibold">Причалы</div><div id="count-Причалы" class="text-sm text-slate-500">0 товаров</div></button>
+      <button onclick="window.openWarehouse('ЮГ')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md text-left"><div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-4 font-bold text-orange-700">Ю</div><div class="font-semibold">ЮГ</div><div id="count-ЮГ" class="text-sm text-slate-500">0 товаров</div></button>
+      <button onclick="window.openWarehouse('Дмитров')" class="bg-white rounded-2xl p-8 shadow-sm border hover:shadow-md text-left"><div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 font-bold text-purple-700">Д</div><div class="font-semibold">Дмитров</div><div id="count-Дмитров" class="text-sm text-slate-500">0 товаров</div></button>
     </div>
-    <div id="warehouseDetail" class="hidden">
-      <button onclick="window.backToWarehouses()" class="mb-4 text-sm bg-white border px-4 py-2 rounded-xl hover:bg-slate-50">Назад к складам</button>
-      <h2 id="warehouseTitle" class="text-xl font-bold mb-6"></h2>
-      <div class="grid grid-cols-3 gap-6">
-        <div class="col-span-2">
-          <div id="addBlock" class="bg-white rounded-2xl p-6 shadow-sm border mb-6">
-            <h3 class="font-semibold mb-4">Добавить товар на <span class="warehouseName"></span></h3>
-            <div class="grid grid-cols-2 gap-3">
-              <input id="p_name" placeholder="Название *" class="border border-slate-200 p-2.5 rounded-xl text-sm">
-              <input id="p_article" placeholder="Артикул" class="border border-slate-200 p-2.5 rounded-xl text-sm">
-              <input id="p_qty" type="number" placeholder="Количество" class="border border-slate-200 p-2.5 rounded-xl text-sm">
-              <input id="p_price" type="number" placeholder="Цена" class="border border-slate-200 p-2.5 rounded-xl text-sm">
-              <input id="p_cat" placeholder="Категория" class="border border-slate-200 p-2.5 rounded-xl text-sm col-span-2">
-            </div>
-            <button onclick="window.addProduct()" id="btnAdd" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition">Добавить</button>
+  </div>
+</div>
+
+<!-- ВНУТРИ СКЛАДА С БОКОВЫМ МЕНЮ КАК НА СКРИНЕ -->
+<div id="warehouseLayout" class="hidden min-h-screen flex">
+  <!-- SIDEBAR -->
+  <aside class="w-[260px] bg-[#0f1e33] text-slate-300 flex flex-col shrink-0">
+    <div class="p-5 border-b border-white/10 flex items-center gap-3">
+      <div class="w-9 h-9 bg-white rounded-lg flex items-center justify-center text-slate-900 font-bold">М</div>
+      <div><div class="text-white font-bold text-sm leading-none">Склады М-Пласт</div><div id="whName" class="text-xs text-slate-400"></div></div>
+    </div>
+    <div class="flex-1 overflow-auto py-4 px-2">
+      <div class="text-[11px] tracking-widest text-slate-500 px-3 mb-2">АНАЛИТИКА</div>
+      <button onclick="window.switchTab('dashboard')" data-tab="dashboard" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 h-5 flex items-center justify-center text-xs">##</span> Дашборд и графики</button>
+      <button onclick="window.switchTab('finance')" data-tab="finance" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5">$</span> Финансы базы</button>
+      <button onclick="window.switchTab('eff')" data-tab="eff" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span>..</span> Эффективность сервиса</button>
+
+      <div class="text-[11px] tracking-widest text-slate-500 px-3 mt-6 mb-2">СКЛАД</div>
+      <button onclick="window.switchTab('stock')" data-tab="stock" class="tab-btn active w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between"><span class="flex items-center gap-3"><span class="w-5 text-center">-</span> Склад запчастей</span><span id="badge-stock" class="badge bg-slate-700 text-white text-xs px-2 py-0.5 rounded-full">0</span></button>
+      <button onclick="window.switchTab('history')" data-tab="history" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">H</span> История операций</button>
+      <button onclick="window.switchTab('orders')" data-tab="orders" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">Z</span> Заявки на закупку</button>
+
+      <div class="text-[11px] tracking-widest text-slate-500 px-3 mt-6 mb-2">ТРАНСПОРТ</div>
+      <button onclick="window.switchTab('fleet')" data-tab="fleet" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between"><span class="flex items-center gap-3"><span class="w-5 text-center">A</span> Автопарк</span><span class="badge bg-slate-700 text-xs px-2 rounded-full">2</span></button>
+      <button onclick="window.switchTab('drivers')" data-tab="drivers" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">O</span> Водители</button>
+      <button onclick="window.switchTab('waybills')" data-tab="waybills" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">P</span> Путевые листы</button>
+      <button onclick="window.switchTab('pre')" data-tab="pre" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">></span> Предрейсовый контроль</button>
+      <button onclick="window.switchTab('gsm')" data-tab="gsm" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">C</span> Одометр и ГСМ</button>
+
+      <div class="text-[11px] tracking-widest text-slate-500 px-3 mt-6 mb-2">ТО И РЕМОНТ</div>
+      <button onclick="window.switchTab('to')" data-tab="to" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">/</span> График ТО</button>
+      <button onclick="window.switchTab('repair_req')" data-tab="repair_req" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">/</span> Заявки на ремонт</button>
+      <button onclick="window.switchTab('repair')" data-tab="repair" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">F</span> Ремонтные листы</button>
+
+      <div class="text-[11px] tracking-widest text-slate-500 px-3 mt-6 mb-2">ДОКУМЕНТЫ</div>
+      <button onclick="window.switchTab('docs')" data-tab="docs" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">C</span> Контроль документов</button>
+      <button onclick="window.switchTab('tires')" data-tab="tires" class="tab-btn w-full text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3"><span class="w-5 text-center">*</span> Шины и АКБ</button>
+    </div>
+    <div class="p-3 border-t border-white/10">
+      <button onclick="window.backToWarehouses()" class="w-full bg-white/10 hover:bg-white/20 text-white text-sm py-2 rounded-lg">Назад к складам</button>
+      <div class="flex items-center justify-between mt-3 text-xs"><span id="userEmail2" class="text-slate-400"></span><button onclick="window.doLogout()" class="text-slate-300 hover:text-white">Выйти</button></div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="flex-1 bg-[#f4f5f7] min-h-screen">
+    <div class="bg-white border-b px-8 py-4 flex justify-between items-center">
+      <h2 id="contentTitle" class="text-xl font-bold text-slate-900">Склад запчастей</h2>
+      <span id="userRole2" class="px-3 py-1 bg-slate-100 rounded-full text-xs uppercase"></span>
+    </div>
+    <div class="p-8">
+      <!-- СКЛАД ЗАПЧАСТЕЙ -->
+      <div id="tab-stock" class="tab-content">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border mb-6" id="addBlock">
+          <h3 class="font-semibold mb-4">Добавить товар</h3>
+          <div class="grid grid-cols-5 gap-3">
+            <input id="p_name" placeholder="Название *" class="border p-2.5 rounded-xl text-sm">
+            <input id="p_article" placeholder="Артикул" class="border p-2.5 rounded-xl text-sm">
+            <input id="p_qty" type="number" placeholder="Кол-во" class="border p-2.5 rounded-xl text-sm">
+            <input id="p_price" type="number" placeholder="Цена" class="border p-2.5 rounded-xl text-sm">
+            <input id="p_cat" placeholder="Категория" class="border p-2.5 rounded-xl text-sm">
           </div>
-          <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
-            <div class="p-6 flex justify-between items-center"><h3 class="font-semibold">Товары</h3><input id="search" oninput="window.loadProducts()" placeholder="Поиск..." class="border border-slate-200 p-2 rounded-xl text-sm w-56"></div>
-            <table class="w-full text-sm"><thead><tr class="bg-slate-50 text-slate-500 text-xs uppercase"><th class="p-3 text-left pl-6">Товар</th><th>Кол-во</th><th>Цена</th><th>Категория</th><th class="pr-6">Действия</th></tr></thead><tbody id="products"></tbody></table>
-          </div>
+          <button onclick="window.addProduct()" id="btnAdd" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm">Добавить</button>
         </div>
-        <div class="bg-white rounded-2xl p-6 shadow-sm border h-fit"><h3 class="font-semibold mb-3">История</h3><div id="history" class="text-sm space-y-2 max-h-[600px] overflow-auto"></div></div>
+        <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+          <div class="p-6 flex justify-between items-center"><h3 class="font-semibold">Товары на складе</h3><input id="search" oninput="window.loadProducts()" placeholder="Поиск..." class="border p-2 rounded-xl text-sm w-64"></div>
+          <table class="w-full text-sm"><thead><tr class="bg-slate-50 text-slate-500 text-xs uppercase"><th class="p-3 text-left pl-6">Товар</th><th>Кол-во</th><th>Цена</th><th>Категория</th><th class="pr-6">Действия</th></tr></thead><tbody id="products"></tbody></table>
+        </div>
       </div>
+
+      <div id="tab-history" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold mb-4">История операций</h3><div id="history" class="space-y-2 text-sm"></div></div>
+      <div id="tab-orders" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold mb-2">Заявки на закупку</h3><p class="text-slate-500 text-sm">Здесь будут заявки на закупку для этого склада. Нажми "Создать заявку" чтобы добавить.</p><button onclick="alert('Скоро: создание заявки')" class="mt-4 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm">Создать заявку</button></div>
+      <div id="tab-dashboard" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Дашборд и графики</h3><p class="text-slate-500 text-sm mt-2">Аналитика по складу <span class="wh-name"></span>: остатки, обороты, стоимость.</p></div>
+      <div id="tab-finance" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Финансы базы</h3><p class="text-slate-500 text-sm">Финансы по складу <span class="wh-name"></span></p></div>
+      <div id="tab-eff" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Эффективность сервиса</h3><p class="text-slate-500 text-sm">KPI сервиса</p></div>
+      <div id="tab-fleet" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Автопарк</h3><p class="text-slate-500 text-sm">2 единицы привязаны к складу <span class="wh-name"></span></p></div>
+      <div id="tab-drivers" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Водители</h3><p class="text-slate-500 text-sm">Список водителей</p></div>
+      <div id="tab-waybills" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Путевые листы</h3><p class="text-slate-500 text-sm">Путевые листы</p></div>
+      <div id="tab-pre" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Предрейсовый контроль</h3><p class="text-slate-500 text-sm">Контроль перед выездом</p></div>
+      <div id="tab-gsm" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Одометр и ГСМ</h3><p class="text-slate-500 text-sm">Расход топлива</p></div>
+      <div id="tab-to" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">График ТО</h3><p class="text-slate-500 text-sm">Плановые ТО</p></div>
+      <div id="tab-repair_req" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Заявки на ремонт</h3><p class="text-slate-500 text-sm">Заявки</p></div>
+      <div id="tab-repair" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Ремонтные листы</h3><p class="text-slate-500 text-sm">Листы ремонта</p></div>
+      <div id="tab-docs" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Контроль документов</h3><p class="text-slate-500 text-sm">Документы</p></div>
+      <div id="tab-tires" class="tab-content hidden bg-white rounded-2xl p-6 shadow-sm border"><h3 class="font-semibold">Шины и АКБ</h3><p class="text-slate-500 text-sm">Учет шин и аккумуляторов</p></div>
     </div>
   </main>
 </div>
@@ -96,87 +145,107 @@
 <script type="module">
 import { createClient } from '@supabase/supabase-js'
 const supabase = createClient('https://qytvxettegrzyyhfzvrz.supabase.co','sb_publishable_SzrxETdLRvuSJ36Ohe-xmA_uyRiqqcD');
-window.supabase = supabase;
 let currentProfile=null, currentWarehouse=null;
 const WAREHOUSES=['Механики','Причалы','ЮГ','Дмитров'];
 
 window.doLogin = async () => {
-  const raw = document.getElementById('email').value.trim();
-  let e = raw.toLowerCase();
-  if(e && !e.includes('@')) e = e+'@m-plast.local';
-  const p = document.getElementById('password').value;
-  document.getElementById('debug').textContent = 'Пробую войти как: ' + e;
-  if(!e || !p){ document.getElementById('authMsg').textContent='Введите логин и пароль'; return; }
+  let raw=document.getElementById('email').value.trim();
+  let e=raw.toLowerCase(); if(e && !e.includes('@')) e=e+'@m-plast.local';
+  const p=document.getElementById('password').value;
+  if(!e||!p){document.getElementById('authMsg').textContent='Введите логин и пароль';return;}
   document.getElementById('authMsg').textContent='Вход...';
-  const { data, error } = await supabase.auth.signInWithPassword({ email: e, password: p });
-  if(error){
-    document.getElementById('authMsg').textContent = error.message + '\nПроверь в Supabase Authentication > Users есть ли этот email и подтвержден ли он';
-    console.error(error);
-  } else { checkUser(); }
+  const {error}=await supabase.auth.signInWithPassword({email:e,password:p});
+  if(error){ document.getElementById('authMsg').textContent=error.message; return; }
+  checkUser();
 }
-window.doLogout = async () => { await supabase.auth.signOut(); location.reload(); }
+window.doLogout=async()=>{await supabase.auth.signOut(); location.reload();}
 async function checkUser(){
-  const { data:{user} } = await supabase.auth.getUser();
-  if(!user) return;
-  const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-  if(error){ document.getElementById('authMsg').textContent='Профиль не найден: '+error.message; return; }
+  const {data:{user}}=await supabase.auth.getUser(); if(!user) return;
+  const {data,error}=await supabase.from('profiles').select('*').eq('id',user.id).single();
+  if(error){document.getElementById('authMsg').textContent=error.message;return;}
   currentProfile=data;
   document.getElementById('auth').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
-  document.getElementById('userEmail').textContent=user.email;
-  document.getElementById('userRole').textContent=data.role;
-  if(data.role==='admin'){ document.getElementById('adminPanel').classList.remove('hidden'); loadUsers(); }
-  if(data.role==='observer'){ document.getElementById('btnAdd').disabled=true; document.getElementById('addBlock').classList.add('opacity-40','pointer-events-none'); }
+  document.getElementById('warehousesView').classList.remove('hidden');
+  document.getElementById('userEmail1').textContent=user.email;
+  document.getElementById('userEmail2').textContent=user.email;
+  document.getElementById('userRole1').textContent=data.role;
+  document.getElementById('userRole2').textContent=data.role;
+  if(data.role==='admin'){document.getElementById('adminPanel').classList.remove('hidden'); loadUsers();}
+  if(data.role==='observer'){document.getElementById('btnAdd').disabled=true; document.getElementById('addBlock').classList.add('opacity-40','pointer-events-none');}
   loadCounts();
 }
-window.openWarehouse = (name) => {
+window.openWarehouse=(name)=>{
   currentWarehouse=name;
   document.getElementById('warehousesView').classList.add('hidden');
-  document.getElementById('warehouseDetail').classList.remove('hidden');
-  document.getElementById('warehouseTitle').textContent='Склад: '+name;
-  document.querySelectorAll('.warehouseName').forEach(el=>el.textContent=name);
-  window.loadProducts(); loadHistory();
+  document.getElementById('warehouseLayout').classList.remove('hidden');
+  document.getElementById('whName').textContent='Склад: '+name;
+  document.querySelectorAll('.wh-name').forEach(el=>el.textContent=name);
+  window.switchTab('stock'); window.loadProducts(); loadHistory(); loadCounts();
 }
-window.backToWarehouses = () => { document.getElementById('warehouseDetail').classList.add('hidden'); document.getElementById('warehousesView').classList.remove('hidden'); loadCounts(); }
+window.backToWarehouses=()=>{
+  document.getElementById('warehouseLayout').classList.add('hidden');
+  document.getElementById('warehousesView').classList.remove('hidden');
+  loadCounts();
+}
+window.switchTab=(id)=>{
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`[data-tab="${id}"]`)?.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
+  document.getElementById('tab-'+id)?.classList.remove('hidden');
+  const titles={stock:'Склад запчастей',history:'История операций',orders:'Заявки на закупку',dashboard:'Дашборд и графики',finance:'Финансы базы',eff:'Эффективность сервиса',fleet:'Автопарк',drivers:'Водители',waybills:'Путевые листы',pre:'Предрейсовый контроль',gsm:'Одометр и ГСМ',to:'График ТО',repair_req:'Заявки на ремонт',repair:'Ремонтные листы',docs:'Контроль документов',tires:'Шины и АКБ'};
+  document.getElementById('contentTitle').textContent=titles[id]||id;
+  if(id==='history') loadHistory();
+  if(id==='stock') window.loadProducts();
+}
 async function loadCounts(){
-  const { data } = await supabase.from('products').select('warehouse');
-  WAREHOUSES.forEach(w=>{ const c=(data||[]).filter(p=>p.warehouse===w).length; const el=document.getElementById('count-'+w); if(el) el.textContent=c+' товаров'; });
+  const {data}=await supabase.from('products').select('warehouse');
+  WAREHOUSES.forEach(w=>{
+    const c=(data||[]).filter(p=>p.warehouse===w).length;
+    const el=document.getElementById('count-'+w); if(el) el.textContent=c+' товаров';
+    const b=document.getElementById('badge-stock'); if(b && currentWarehouse===w) b.textContent=c;
+  });
+  if(currentWarehouse){
+    const c=(data||[]).filter(p=>p.warehouse===currentWarehouse).length;
+    document.getElementById('badge-stock').textContent=c;
+  }
 }
-window.createUser = async () => {
+window.createUser=async()=>{
   let raw=document.getElementById('u_email').value.trim().toLowerCase();
   let e=raw.includes('@')?raw:raw+'@m-plast.local';
-  const { data, error } = await supabase.auth.signUp({ email:e, password:document.getElementById('u_pass').value, options:{data:{full_name:document.getElementById('u_name').value}}});
-  if(error){ document.getElementById('userMsg').textContent=error.message; return; }
+  const {data,error}=await supabase.auth.signUp({email:e,password:document.getElementById('u_pass').value,options:{data:{full_name:document.getElementById('u_name').value}}});
+  if(error){document.getElementById('userMsg').textContent=error.message;return;}
   if(data.user) await supabase.from('profiles').update({role:document.getElementById('u_role').value, full_name:document.getElementById('u_name').value}).eq('id',data.user.id);
   document.getElementById('userMsg').textContent='Создан: '+e; loadUsers();
 }
 async function loadUsers(){
-  const { data } = await supabase.from('profiles').select('*').order('created_at');
-  document.getElementById('usersList').innerHTML=(data||[]).map(u=>`<div class="flex justify-between py-3"><div><b>${u.email}</b> ${u.full_name||''} - ${u.role}</div><div class="flex gap-1"><button onclick="window.setRole('${u.id}','admin')" class="px-2 hover:bg-slate-100 rounded">admin</button><button onclick="window.setRole('${u.id}','observer')" class="px-2 hover:bg-slate-100 rounded">observer</button><button onclick="window.delUser('${u.id}')" class="text-red-600 ml-2">удалить</button></div></div>`).join('');
+  const {data}=await supabase.from('profiles').select('*').order('created_at');
+  document.getElementById('usersList').innerHTML=(data||[]).map(u=>`<div class="flex justify-between py-2"><div><b>${u.email}</b> ${u.full_name||''} - ${u.role}</div><div class="flex gap-1"><button onclick="window.setRole('${u.id}','admin')" class="px-2 hover:bg-slate-100 rounded">admin</button><button onclick="window.setRole('${u.id}','observer')" class="px-2 hover:bg-slate-100 rounded">observer</button><button onclick="window.delUser('${u.id}')" class="text-red-600 ml-2">удал.</button></div></div>`).join('');
 }
-window.setRole=async(id,role)=>{ await supabase.from('profiles').update({role}).eq('id',id); loadUsers(); }
-window.delUser=async(id)=>{ if(!confirm('Удалить?'))return; await supabase.from('profiles').delete().eq('id',id); loadUsers(); }
+window.setRole=async(id,role)=>{await supabase.from('profiles').update({role}).eq('id',id); loadUsers();}
+window.delUser=async(id)=>{if(!confirm('Удалить?'))return; await supabase.from('profiles').delete().eq('id',id); loadUsers();}
 window.addProduct=async()=>{
   if(!document.getElementById('p_name').value) return alert('Введите название');
   const {error}=await supabase.from('products').insert([{name:document.getElementById('p_name').value, article:document.getElementById('p_article').value, quantity:parseInt(document.getElementById('p_qty').value)||0, price:parseFloat(document.getElementById('p_price').value)||0, category:document.getElementById('p_cat').value, warehouse:currentWarehouse}]);
-  if(error) alert(error.message); else { ['p_name','p_article','p_qty','p_price','p_cat'].forEach(id=>document.getElementById(id).value=''); window.loadProducts(); loadCounts(); }
+  if(error) alert(error.message); else {['p_name','p_article','p_qty','p_price','p_cat'].forEach(id=>document.getElementById(id).value=''); window.loadProducts(); loadCounts();}
 }
 window.loadProducts=async()=>{
-  const { data } = await supabase.from('products').select('*').eq('warehouse',currentWarehouse).order('created_at',{ascending:false});
+  const {data}=await supabase.from('products').select('*').eq('warehouse',currentWarehouse).order('created_at',{ascending:false});
   let f=data||[]; const s=document.getElementById('search').value; if(s) f=f.filter(p=>p.name.toLowerCase().includes(s.toLowerCase()));
-  document.getElementById('products').innerHTML=f.length?f.map(p=>`<tr class="border-t"><td class="p-3 pl-6">${p.name}<div class="text-xs text-slate-400">${p.article||''}</div></td><td>${p.quantity}</td><td>${p.price} ₽</td><td>${p.category||'-'}</td><td><button onclick="window.move('${p.id}',${p.quantity},'приход')" class="bg-emerald-50 px-3 py-1 rounded-full text-xs mr-1">+ Приход</button><button onclick="window.move('${p.id}',${p.quantity},'расход')" class="bg-red-50 px-3 py-1 rounded-full text-xs">- Расход</button></td></tr>`).join(''):`<tr><td colspan="5" class="p-6 text-center text-slate-400">Нет товаров</td></tr>`;
+  document.getElementById('products').innerHTML=f.length?f.map(p=>`<tr class="border-t"><td class="p-3 pl-6"><div class="font-medium">${p.name}</div><div class="text-xs text-slate-400">${p.article||''}</div></td><td>${p.quantity}</td><td>${p.price} ₽</td><td>${p.category||'-'}</td><td><button onclick="window.move('${p.id}',${p.quantity},'приход')" class="bg-emerald-50 px-3 py-1 rounded-full text-xs mr-1">+ Приход</button><button onclick="window.move('${p.id}',${p.quantity},'расход')" class="bg-red-50 px-3 py-1 rounded-full text-xs">- Расход</button>${currentProfile.role==='admin'?`<button onclick="window.delProduct('${p.id}')" class="ml-2 text-slate-400">x</button>`:''}</td></tr>`).join(''):`<tr><td colspan="5" class="p-6 text-center text-slate-400">Нет товаров на этом складе</td></tr>`;
 }
 window.move=async(id,qty,type)=>{
+  if(currentProfile.role==='observer') return alert('Нет прав');
   let n=parseInt(prompt(`Сколько ${type}?`)); if(!n) return;
   let newQty=type==='приход'?qty+n:qty-n; if(newQty<0) return alert('Недостаточно');
   await supabase.from('products').update({quantity:newQty}).eq('id',id);
   await supabase.from('movements').insert([{product_id:id, type, quantity:n, user_id:currentProfile.id}]);
   window.loadProducts(); loadHistory(); loadCounts();
 }
+window.delProduct=async(id)=>{if(!confirm('Удалить?'))return; await supabase.from('products').delete().eq('id',id); window.loadProducts(); loadCounts();}
 async function loadHistory(){
-  const { data } = await supabase.from('movements').select('*, products(name,warehouse)').order('created_at',{ascending:false}).limit(30);
+  const {data}=await supabase.from('movements').select('*, products(name,warehouse)').order('created_at',{ascending:false}).limit(50);
   let f=(data||[]).filter(m=>m.products?.warehouse===currentWarehouse);
-  document.getElementById('history').innerHTML=!f.length?'<p class="text-slate-400 text-xs">Нет движений</p>':f.map(m=>`<div class="flex justify-between border-b pb-2 text-xs"><span class="${m.type==='приход'?'text-emerald-600':'text-red-600'}">${m.type} ${m.quantity}</span><span>${m.products?.name||''}</span><span class="text-slate-400">${new Date(m.created_at).toLocaleDateString()}</span></div>`).join('');
+  document.getElementById('history').innerHTML=!f.length?'<p class="text-slate-400 text-sm">Нет операций</p>':f.map(m=>`<div class="flex justify-between border-b pb-2 text-sm"><span class="${m.type==='приход'?'text-emerald-600':'text-red-600'}">${m.type} ${m.quantity} шт</span><span>${m.products?.name||''}</span><span class="text-slate-400 text-xs">${new Date(m.created_at).toLocaleString()}</span></div>`).join('');
 }
 checkUser();
 </script>
